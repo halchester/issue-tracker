@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Formik } from "formik";
 import Header from "./components/Header";
 import axios from "./api";
+import { addIssueFormValidator } from "../utils/index";
 
 const formInitialValues = {
   title: "",
@@ -30,6 +31,7 @@ export default function AddNewIssue() {
             console.log(payload);
             axios.post("/api/issue", payload);
           }}
+          validationSchema={addIssueFormValidator}
         >
           {({
             handleSubmit,
