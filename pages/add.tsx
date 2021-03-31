@@ -3,11 +3,18 @@ import { Formik } from "formik";
 import Header from "./components/Header";
 import axios from "./api";
 
+const formInitialValues = {
+  title: "",
+  status: "to fix",
+  owner: "",
+  deadline: "",
+};
+
 export default function AddNewIssue() {
   return (
     <div>
       <Head>
-        <title>Create Next App</title>
+        <title>Issue Tracker</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="p-4">
@@ -16,12 +23,7 @@ export default function AddNewIssue() {
         </p>
         <Formik
           enableReinitialize
-          initialValues={{
-            title: "",
-            status: "to fix",
-            owner: "",
-            deadline: "",
-          }}
+          initialValues={formInitialValues}
           onSubmit={(values) => {
             const { title, owner, deadline, status } = values;
             const payload = { title, owner, deadline, status };
@@ -34,6 +36,7 @@ export default function AddNewIssue() {
             handleChange,
             handleBlur,
             values,
+            resetForm,
             errors,
             touched,
             setFieldValue,
@@ -90,7 +93,10 @@ export default function AddNewIssue() {
               />
               <button
                 type="submit"
-                onClick={() => handleSubmit}
+                onClick={() => {
+                  handleSubmit;
+                  resetForm();
+                }}
                 style={{ marginTop: "1.5rem" }}
                 className="font-body justify-self-auto self-center border border-gray-400 p-1 rounded-lg px-3 "
               >
@@ -100,17 +106,6 @@ export default function AddNewIssue() {
           )}
         </Formik>
       </main>
-
-      {/* <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer> */}
     </div>
   );
 }
