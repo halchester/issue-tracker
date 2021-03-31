@@ -5,7 +5,8 @@ require("dotenv").config();
 const PORT = 8000;
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
+const cookieParser = require("cookie-parser");
+const methodOverride = require("method-override");
 // Route imports
 const issueRouter = require("./routes/issue.route");
 app.use("/api/", issueRouter);
@@ -15,8 +16,7 @@ let options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
