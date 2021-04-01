@@ -3,15 +3,20 @@ import { Formik } from "formik";
 import Header from "./components/Header";
 import axios from "./api";
 import { addIssueFormValidator } from "../utils/index";
+import { useState } from "react";
+import Spinner from "../utils/Spinner";
 
 const formInitialValues = {
   title: "",
-  status: "to fix",
+  type: "to fix",
+  status: "open",
   owner: "",
   deadline: "",
+  description: "",
 };
 
 export default function AddNewIssue() {
+  const [loading, setLoading] = useState(false);
   return (
     <div>
       <Head>
@@ -25,11 +30,28 @@ export default function AddNewIssue() {
         <Formik
           enableReinitialize
           initialValues={formInitialValues}
-          onSubmit={(values) => {
-            const { title, owner, deadline, status } = values;
-            const payload = { title, owner, deadline, status };
-            console.log(payload);
-            axios.post("/api/issue", payload);
+          onSubmit={(values, { resetForm }) => {
+            setLoading(true);
+            const {
+              title,
+              owner,
+              deadline,
+              status,
+              type,
+              description,
+            } = values;
+            const payload = {
+              title,
+              owner,
+              deadline,
+              status,
+              type,
+              description,
+            };
+            axios.post("/api/issue", payload).then((response) => {
+              setLoading(false);
+              resetForm();
+            });
           }}
           validationSchema={addIssueFormValidator}
         >
@@ -57,6 +79,19 @@ export default function AddNewIssue() {
                 className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 font-body"
               />
               <label className="block text-md font-medium text-gray-500 font-body">
+                Type
+              </label>
+              <select
+                value={values.type}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                id="type"
+                className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 font-body"
+              >
+                <option>to fix</option>
+                <option>to do</option>
+              </select>
+              <label className="block text-md font-medium text-gray-500 font-body">
                 Status
               </label>
               <select
@@ -66,8 +101,9 @@ export default function AddNewIssue() {
                 id="status"
                 className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 font-body"
               >
-                <option>to fix</option>
-                <option>to do</option>
+                <option>open</option>
+                <option>assigned</option>
+                <option>bug</option>
               </select>
               <label className="block text-md font-medium text-gray-500 font-body">
                 Owner
@@ -79,6 +115,18 @@ export default function AddNewIssue() {
                 id="owner"
                 type="text"
                 placeholder="Issue Owner"
+                className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 font-body"
+              />
+              <label className="block text-md font-medium text-gray-500 font-body">
+                Description
+              </label>
+              <textarea
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                id="description"
+                rows={3}
+                placeholder="Describe how the issue is occured"
                 className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 font-body"
               />
               <label className="block text-md font-medium text-gray-500 font-body">
@@ -95,10 +143,7 @@ export default function AddNewIssue() {
               />
               <button
                 type="submit"
-                onClick={() => {
-                  handleSubmit;
-                  resetForm();
-                }}
+                onClick={() => handleSubmit}
                 style={{ marginTop: "1.5rem" }}
                 className="font-body justify-self-auto self-center border border-gray-400 p-1 rounded-lg px-3 "
               >
@@ -107,6 +152,7 @@ export default function AddNewIssue() {
             </form>
           )}
         </Formik>
+        {loading ? <Spinner /> : null}
       </main>
     </div>
   );

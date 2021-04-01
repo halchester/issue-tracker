@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const shortId = require("shortid");
 
 const Issue = mongoose.Schema({
   title: {
@@ -7,7 +8,11 @@ const Issue = mongoose.Schema({
   },
   status: {
     type: String,
-    default: "to fix",
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
   },
   owner: {
     type: String,
@@ -15,8 +20,17 @@ const Issue = mongoose.Schema({
   },
   deadline: {
     type: Date,
-    required: true,
+  },
+  description: {
+    type: String,
+  },
+  uniqueId: {
+    type: String,
   },
 });
-
+Issue.pre("save", async function (next) {
+  //generate a unique short code
+  this.uniqueId = await shortId.generate();
+  next();
+});
 module.exports = mongoose.model("Issue", Issue);

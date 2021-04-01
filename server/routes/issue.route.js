@@ -8,8 +8,23 @@ router.get("/issues", async (req, res) => {
     .catch((err) => res.status(400).json({ success: false, error: err }));
 });
 
-router.post("/issue", (req, res) => {
-  console.log(req.body);
+router.post("/issue", async (req, res) => {
+  try {
+    const { title, owner, deadline, status, type, description } = req.body;
+    let newIssue = new Issue({
+      title,
+      owner,
+      deadline,
+      status,
+      type,
+      description,
+    });
+    await newIssue.save();
+    return res.status(200).json({ success: true, data: newIssue });
+  } catch (err) {
+    console.log(err);
+    return res.status(200).json({ success: false, data: {} });
+  }
 });
 
 module.exports = router;
