@@ -9,6 +9,6 @@ export const fetchAllIssues = async () => {
 };
 
 export const fetchOneIssue = async (props) => {
-  const data = await axios.get(`/api/issue/${props.queryKey[1].id}`);
+  const data = await axios.get(`/api/issue/${props.queryKey[1]}`);
   return data.data.data;
 };

@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "../api/index";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { fetchOneIssue } from "../api/query";
 import Spinner from "../../utils/Spinner";
@@ -9,15 +9,17 @@ import { Formik } from "formik";
 
 const EditIssue: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
-  const id = Router.query;
+  const router = useRouter();
+  const id = router.query.id;
   const { status, data } = useQuery(["fetchOneIssue", id], fetchOneIssue);
+
   return (
     <div>
-      {status === "loading" ? (
+      {status !== "success" ? (
         <Spinner />
       ) : (
         <div className="p-4 font-body">
-          <p className="text font-bold text-lg">Issue Id {data.uniqueId}</p>
+          <p className="text font-bold text-lg">Issue Id {id}</p>
           <Formik
             enableReinitialize
             initialValues={data}
@@ -28,7 +30,7 @@ const EditIssue: React.FC = () => {
               };
               axios.put(`/api/issue/${id}`, payload).then((response) => {
                 setLoading(false);
-                Router.push("/");
+                router.push("/");
               });
             }}
           >
