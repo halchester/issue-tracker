@@ -6,6 +6,12 @@ exports.getAllIssues = async (req, res) => {
     .then((data) => res.status(200).json({ success: true, data: data }))
     .catch((err) => res.status(400).json({ success: false, error: err }));
 };
+exports.getOneIssue = async (req, res) => {
+  const { id } = req.params;
+  await Issue.findOne({ uniqueId: id })
+    .then((data) => res.status(200).json({ success: true, data: data }))
+    .catch((err) => res.status(400).json({ success: false, error: err }));
+};
 
 exports.registerIssue = async (req, res) => {
   try {
@@ -27,21 +33,20 @@ exports.registerIssue = async (req, res) => {
 };
 
 exports.editIssue = async (req, res) => {
-  const { id } = req.params;
-  await Issue.findOneAndUpdate(
-    { uniqueId: id },
+  const { uniqueId } = req.body;
+  await Issue.updateOne(
+    { uniqueId: uniqueId },
     {
       $set: { ...req.body },
     },
     { new: true }
-  ).then((data) =>
-    res
-      .status(200)
-      .json({ status: true, data })
-      .catch((err) =>
-        res.status(200).json({ success: false, data: err.message })
-      )
-  );
+  )
+    .then((data) => {
+      return res.status(200).json({ success: true, data: data });
+    })
+    .catch((err) =>
+      res.status(200).json({ success: false, data: err.message })
+    );
 };
 
 exports.deleteIssue = async (req, res) => {

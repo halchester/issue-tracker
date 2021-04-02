@@ -2,6 +2,7 @@ import moment from "moment";
 import { useState } from "react";
 import Spinner from "../../utils/Spinner";
 import axios from "../api/index";
+import Link from "next/link";
 
 export interface IssueCardProps {
   title: string;
@@ -23,7 +24,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
   uniqueId,
 }) => {
   const [loading, setLoading] = useState(false);
-
   const deleteIssue = () => {
     setLoading(true);
     axios.delete(`/api/issue/${uniqueId}`).then((res) => setLoading(false));
@@ -50,9 +50,11 @@ const IssueCard: React.FC<IssueCardProps> = ({
         <p>{description}</p>
       </div>
       <div className="mt-2">
-        <button className="rounded-lg border px-2 py-1 mx-1 bg-green-400 text-white">
-          Edit issue
-        </button>
+        <Link href={`/issue/${uniqueId}`}>
+          <button className="rounded-lg border px-2 py-1 mx-1 bg-green-400 text-white">
+            Edit issue
+          </button>
+        </Link>
         <button
           className="rounded-lg border px-2 py-1 bg-red-500 text-white p-1 mx-1"
           onClick={deleteIssue}
