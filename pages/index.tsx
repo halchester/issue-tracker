@@ -5,8 +5,9 @@ import { fetchAllIssues } from "./api/query";
 import IssueCard from "./components/IssueCard";
 
 const IssueList: React.FC = () => {
-  const { isError, status, data } = useQuery("fetchAllIssues", fetchAllIssues);
-  console.log(data);
+  const { isError, status, data } = useQuery("fetchAllIssues", fetchAllIssues, {
+    refetchInterval: 20000,
+  });
   return (
     <div>
       {status === "loading" ? (
@@ -23,6 +24,7 @@ const IssueList: React.FC = () => {
                 status={item.status}
                 type={item.type}
                 description={item.description}
+                uniqueId={item.uniqueId}
               />
             ))}
           </div>

@@ -12,7 +12,7 @@ app.use(cors());
 
 // Route imports
 const issueRouter = require("./routes/issue.route");
-app.use("/api/", issueRouter);
+app.use("/", issueRouter);
 
 let options = {
   useCreateIndex: true,

@@ -1,4 +1,7 @@
 import moment from "moment";
+import { useState } from "react";
+import Spinner from "../../utils/Spinner";
+import axios from "../api/index";
 
 export interface IssueCardProps {
   title: string;
@@ -7,6 +10,7 @@ export interface IssueCardProps {
   type: string;
   deadline: string;
   description: string;
+  uniqueId: string;
 }
 
 const IssueCard: React.FC<IssueCardProps> = ({
@@ -16,14 +20,22 @@ const IssueCard: React.FC<IssueCardProps> = ({
   deadline,
   type,
   description,
+  uniqueId,
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  const deleteIssue = () => {
+    setLoading(true);
+    axios.delete(`/api/issue/${uniqueId}`).then((res) => setLoading(false));
+  };
+
   return (
     <div className="rounded-lg shadow-lg p-3 font-body">
       <h1 className="mt-2 text-lg text-gray-600">{title}</h1>
       <p className="my-1 text-sm">Issue opened by {owner}</p>
       {deadline ? (
         <p className="my-1 text-sm text-red-500 font-semibold">
-          Deadline at {moment(deadline).format("MMM DD YYYY")}
+          Deadline on {moment(deadline).format("MMM DD YYYY")}
         </p>
       ) : null}
       <div className="pt-2 pb-1">
@@ -37,6 +49,18 @@ const IssueCard: React.FC<IssueCardProps> = ({
       <div>
         <p>{description}</p>
       </div>
+      <div className="mt-2">
+        <button className="rounded-lg border px-2 py-1 mx-1 bg-green-400 text-white">
+          Edit issue
+        </button>
+        <button
+          className="rounded-lg border px-2 py-1 bg-red-500 text-white p-1 mx-1"
+          onClick={deleteIssue}
+        >
+          Delete issue
+        </button>
+      </div>
+      {loading ? <Spinner /> : null}
     </div>
   );
 };
