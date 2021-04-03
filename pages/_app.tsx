@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "./api/query";
 import Head from "next/head";
+import Footer from "./components/Footer";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -17,6 +18,7 @@ function MyApp({ Component, pageProps }) {
         </Head>
         <Header />
         <Component {...pageProps} />
+        <Footer />
       </QueryClientProvider>
     </>
   );
